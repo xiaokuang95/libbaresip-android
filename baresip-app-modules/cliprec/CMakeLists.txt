@@ -1,0 +1,25 @@
+project(cliprec)
+
+foreach(component ${MEDIASERVER_COMPONENTS})
+	list(APPEND MEDIASERVER_LIBRARIES "${MEDIASERVER_LIBRARY}/${component}")
+endforeach()
+
+# 打印 MEDIASERVER_INCLUDE_DIR 和 MEDIASERVER_LIBRARIES 以进行调试
+# message(STATUS "MEDIASERVER_COMPONENTS: ${MEDIASERVER_COMPONENTS}")
+# message(STATUS "MEDIASERVER_INCLUDE_DIR: ${MEDIASERVER_INCLUDE_DIR}")
+# message(STATUS "MEDIASERVER_LIBRARIES: ${MEDIASERVER_LIBRARIES}")
+
+list(APPEND MODULES_DETECTED ${PROJECT_NAME})
+set(MODULES_DETECTED ${MODULES_DETECTED} PARENT_SCOPE)
+
+set(SRCS common.c cliprec.c rec.c mov-file-buffer.c audio.c video.c aac.c h264.c)
+
+if(STATIC)
+  add_library(${PROJECT_NAME} OBJECT ${SRCS})
+else()
+  add_library(${PROJECT_NAME} MODULE ${SRCS})
+endif()
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${MEDIASERVER_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${MEDIASERVER_LIBRARIES})
+
